@@ -36,7 +36,7 @@ class Wall
   }
 
   @Override
-    public boolean equals(Object o)
+  boolean equals(Object o)
   {
     if (o == this)
       return true;
@@ -45,12 +45,8 @@ class Wall
   }
 }
 
-
-class Map
+class Cell
 {
-  ArrayList<Wall> walls;
-  class Cell
-  {
     Cell left;
     Cell right;
     Cell up;
@@ -80,26 +76,31 @@ class Map
         return "right";
       return "none";
     }
-  }
+}
 
-  ArrayList<Cell> Cells = new ArrayList<Cell>();
-
-  Map()
-  {
-    walls = new ArrayList<Wall>();
-  }
-
-  void addAllWalls(ArrayList<Wall> frontier, Cell c)
-  {
+void addAllWalls(ArrayList<Wall> frontier, Cell c)
+{
     frontier.add(c.topWall);
     frontier.add(c.bottomWall);
     frontier.add(c.leftWall);
     frontier.add(c.rightWall);
+}
+
+class Map
+{
+  ArrayList<Wall> walls;
+  ArrayList<Cell> Cells;
+
+  Map()
+  {
+    walls = new ArrayList<Wall>();
+    Cells = new ArrayList<Cell>();
   }
 
   void generate(int which)
   {
     walls.clear();
+    Cells.clear();
     for (float i = GRID_SIZE/2; i <= width - GRID_SIZE/2; i += GRID_SIZE) {
       for (float j = GRID_SIZE/2; j <= height - GRID_SIZE/2; j += GRID_SIZE) {
         Cell newCell = new Cell(i, j);
@@ -316,48 +317,28 @@ class Map
       w.draw();
     }
     
-    for(Cell c : Cells){
-      noStroke();
-      fill(color(255,0,0));
-      circle(c.x, c.y, 5);
-      
-      if(c.bottomWall == null){
-        stroke(255,0,0);
-        strokeWeight(1);
-        line(c.x, c.y, c.down.x, c.down.y);
+    if(show_nodes){
+      for(Cell c : Cells){
+        noStroke();
+        fill(color(255,0,0));
+        circle(c.x, c.y, 5);
+        
+        if(c.bottomWall == null){
+          stroke(255,0,0);
+          strokeWeight(1);
+          line(c.x, c.y, c.down.x, c.down.y);
+        }
+        if(c.rightWall == null){
+          stroke(255,0,0);
+          strokeWeight(1);
+          line(c.x, c.y, c.right.x, c.right.y);
+        }
+        if(c.leftWall == null){
+          stroke(255,0,0);
+          strokeWeight(1);
+          line(c.x, c.y, c.left.x, c.left.y);
+        }
       }
-      if(c.rightWall == null){
-        stroke(255,0,0);
-        strokeWeight(1);
-        line(c.x, c.y, c.right.x, c.right.y);
-      }
-      if(c.leftWall == null){
-        stroke(255,0,0);
-        strokeWeight(1);
-        line(c.x, c.y, c.left.x, c.left.y);
-      }
-      
     }
-    
-    //for (int i = 0; i < width; i += GRID_SIZE) {
-    //  for (int j = 0; j < height; j += GRID_SIZE) {
-    //    stroke(255);
-    //    strokeWeight(3);
-    //    point(i, j);
-    //  }
-    //}
-    //for (Cell c : Cells)
-    //{
-    //  stroke(255);
-    //  strokeWeight(3);
-    //  if (c.right != null)
-    //  {
-    //    line(c.x, c.y, c.right.x, c.right.y);
-    //  }
-    //  if (c.down != null)
-    //  {
-    //    line(c.x, c.y, c.down.x, c.down.y);
-    //  }
-    //}
   }
 }

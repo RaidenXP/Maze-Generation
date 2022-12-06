@@ -5,6 +5,7 @@
 ArrayList<PVector> waypoints = new ArrayList<PVector>();
 int lastt;
 
+boolean show_nodes = false;
 
 Map map = new Map();
 
@@ -21,6 +22,10 @@ void keyPressed()
     {
        map.generate(-2);
     }
+    else if (key == 'n')
+    {
+       show_nodes = !show_nodes;
+    }
 }
 
 
@@ -30,5 +35,5 @@ void draw() {
   float dt = (millis() - lastt)/1000.0;
   lastt = millis();
   
-  map.update(dt);  
+  map.update(dt);
 }
