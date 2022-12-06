@@ -62,13 +62,13 @@ class Map
     Wall bottomWall;
     Wall rightWall;
 
-    public Cell(float x, float y)
+    Cell(float x, float y)
     {
       this.x = x;
       this.y = y;
     }
 
-    public String whichWall(Wall w)
+    String whichWall(Wall w)
     {
       if (w == topWall)
         return "top";
@@ -100,8 +100,8 @@ class Map
   void generate(int which)
   {
     walls.clear();
-    for (float i = GRID_SIZE/2; i <= 800 - GRID_SIZE/2; i += GRID_SIZE) {
-      for (float j = GRID_SIZE/2; j <= 600 - GRID_SIZE/2; j += GRID_SIZE) {
+    for (float i = GRID_SIZE/2; i <= width - GRID_SIZE/2; i += GRID_SIZE) {
+      for (float j = GRID_SIZE/2; j <= height - GRID_SIZE/2; j += GRID_SIZE) {
         Cell newCell = new Cell(i, j);
         Cells.add(newCell);
         int index = Cells.indexOf(newCell);
@@ -114,9 +114,9 @@ class Map
             newCell.up = up;
           }
         }
-        if (index >= 600 / GRID_SIZE)
+        if (index >= height / GRID_SIZE)
         {
-          Cell left = Cells.get(index-600/GRID_SIZE);
+          Cell left = Cells.get(index-height/GRID_SIZE);
           if (left.y == newCell.y)
           {
             left.right = newCell;
@@ -146,7 +146,7 @@ class Map
         c.left.rightWall = leftWall;
       }
       map.walls.add(leftWall);
-      if (c.x == GRID_SIZE/2 + GRID_SIZE * (800/GRID_SIZE - 1))
+      if (c.x == GRID_SIZE/2 + GRID_SIZE * (width/GRID_SIZE - 1))
       {
         start = new PVector(c.x+GRID_SIZE/2, c.y-GRID_SIZE/2);
         end = new PVector(c.x+GRID_SIZE/2, c.y+GRID_SIZE/2);
@@ -154,7 +154,7 @@ class Map
         map.walls.add(rightmost);
         c.rightWall = rightmost;
       }
-      if (c.y == GRID_SIZE/2 + GRID_SIZE * (600/GRID_SIZE - 1))
+      if (c.y == GRID_SIZE/2 + GRID_SIZE * (height/GRID_SIZE - 1))
       {
         start = new PVector(c.x-GRID_SIZE/2, c.y+GRID_SIZE/2);
         end = new PVector(c.x+GRID_SIZE/2, c.y+GRID_SIZE/2);
@@ -209,19 +209,24 @@ class Map
           {
             if (c.up != null)
             {
+              // we enter this if statement but we never enter the next if statements any of them
               int wallIndex = Cells.indexOf(c);
               int topWallIndex = Cells.indexOf(c.up);
               if (visited.contains(wallIndex) && !visited.contains(topWallIndex))
               {
+                println("in");
                 walls.remove(randomWall);
                 visited.add(topWallIndex);
                 addAllWalls(frontier, c.up);
+                c.topWall = null;
               }
               else if (!visited.contains(wallIndex) && visited.contains(topWallIndex))
               {
+                println("in");
                 walls.remove(randomWall);
                 visited.add(wallIndex);
                 addAllWalls(frontier, c);
+                c.topWall = null;
               }
             }
           }
@@ -236,12 +241,14 @@ class Map
                 walls.remove(randomWall);
                 visited.add(bottomWallIndex);
                 addAllWalls(frontier, c.down);
+                c.bottomWall = null;
               }
               else if (!visited.contains(wallIndex) && visited.contains(bottomWallIndex))
               {
                 walls.remove(randomWall);
                 visited.add(wallIndex);
                 addAllWalls(frontier, c);
+                c.bottomWall = null;
               }
             }
           }
@@ -256,12 +263,14 @@ class Map
                 walls.remove(randomWall);
                 visited.add(leftWallIndex);
                 addAllWalls(frontier, c.left);
+                c.leftWall = null;
               }
               else if (!visited.contains(wallIndex) && visited.contains(leftWallIndex))
               {
                 walls.remove(randomWall);
                 visited.add(wallIndex);
                 addAllWalls(frontier, c);
+                c.leftWall = null;
               }
             }
           }
@@ -276,12 +285,14 @@ class Map
                 walls.remove(randomWall);
                 visited.add(rightWallIndex);
                 addAllWalls(frontier, c.right);
+                c.rightWall = null;
               }
               else if (!visited.contains(wallIndex) && visited.contains(rightWallIndex))
               {
                 walls.remove(randomWall);
                 visited.add(wallIndex);
                 addAllWalls(frontier, c);
+                c.rightWall = null;
               }
             }
           }
@@ -304,13 +315,37 @@ class Map
     {
       w.draw();
     }
-    for (int i = 0; i < 800; i += GRID_SIZE) {
-      for (int j = 0; j < 600; j += GRID_SIZE) {
-        stroke(255);
-        strokeWeight(3);
-        point(i, j);
+    
+    for(Cell c : Cells){
+      noStroke();
+      fill(color(255,0,0));
+      circle(c.x, c.y, 5);
+      
+      if(c.bottomWall == null){
+        stroke(255,0,0);
+        strokeWeight(1);
+        line(c.x, c.y, c.down.x, c.down.y);
       }
+      if(c.rightWall == null){
+        stroke(255,0,0);
+        strokeWeight(1);
+        line(c.x, c.y, c.right.x, c.right.y);
+      }
+      if(c.leftWall == null){
+        stroke(255,0,0);
+        strokeWeight(1);
+        line(c.x, c.y, c.left.x, c.left.y);
+      }
+      
     }
+    
+    //for (int i = 0; i < width; i += GRID_SIZE) {
+    //  for (int j = 0; j < height; j += GRID_SIZE) {
+    //    stroke(255);
+    //    strokeWeight(3);
+    //    point(i, j);
+    //  }
+    //}
     //for (Cell c : Cells)
     //{
     //  stroke(255);
