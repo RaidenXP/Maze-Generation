@@ -101,6 +101,8 @@ class Map
   {
     walls.clear();
     Cells.clear();
+    
+    //grid centers and neighbors set up
     for (float i = GRID_SIZE/2; i <= width - GRID_SIZE/2; i += GRID_SIZE) {
       for (float j = GRID_SIZE/2; j <= height - GRID_SIZE/2; j += GRID_SIZE) {
         Cell newCell = new Cell(i, j);
@@ -127,6 +129,8 @@ class Map
       }
     }
 
+    // assign walls starting with the top wall then left wall
+    // if we are in the last row/column we add walls there
     for (Cell c : Cells)
     {
       PVector start = new PVector(c.x-GRID_SIZE/2, c.y-GRID_SIZE/2);
@@ -189,6 +193,13 @@ class Map
     //  if (c.down != null)
     //    System.out.println("Down: (" + c.down.x + ", " + c.down.y + ")");
     //}
+    
+    // start of Prim's Algorithm
+    // choose a random center
+    // add all walls mark center as visited
+    // choose a random wall and remove if possible
+    // one cell is visited and the other is not visited yet
+    // add all of the new cells walls
     Random random = new Random();
     int startIndex = random.nextInt(Cells.size());
     // println(Cells.size());
@@ -215,7 +226,7 @@ class Map
               int topWallIndex = Cells.indexOf(c.up);
               if (visited.contains(wallIndex) && !visited.contains(topWallIndex))
               {
-                println("in");
+                //println("in");
                 walls.remove(randomWall);
                 visited.add(topWallIndex);
                 addAllWalls(frontier, c.up);
@@ -223,7 +234,7 @@ class Map
               }
               else if (!visited.contains(wallIndex) && visited.contains(topWallIndex))
               {
-                println("in");
+                //println("in");
                 walls.remove(randomWall);
                 visited.add(wallIndex);
                 addAllWalls(frontier, c);
